@@ -16,12 +16,30 @@ struct SetGameView: View {
   
   var body: some View {
     VStack {
-      LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), spacing: 0)]) {
-        ForEach(viewModel.cards) { card in
-          CardView(card: card)
-            .aspectRatio(2/3, contentMode: .fit)
-            .padding(4)
+      HStack {
+        Spacer()
+        Button {
+          viewModel.laidOutMoreCards()
+        } label: {
+          Image(systemName: "rectangle.stack.badge.plus")
+          Text("3 more cards")
         }
+      }
+      
+      ScrollView {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 95), spacing: 0)]) {
+          ForEach(viewModel.cards) { card in
+            CardView(card: card)
+              .aspectRatio(2/3, contentMode: .fit)
+              .padding(4)
+          }
+        }
+      }
+      
+      Button {
+        viewModel.startNewGame()
+      } label: {
+        Text("Start New Game")
       }
     }
     .padding(.horizontal)
