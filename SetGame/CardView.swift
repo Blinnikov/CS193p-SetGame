@@ -13,23 +13,25 @@ struct CardView: View {
   
   var body: some View {
     
-    ZStack {
-      let shape = RoundedRectangle(cornerRadius: 10)
-      shape.fill()
-      if selected {
-        shape.strokeBorder(.blue, lineWidth: 4)
-      } else {
-        shape.strokeBorder(.gray, lineWidth: 1.5)
-      }
+    GeometryReader { geometryProxy in
+      ZStack {
+        let shape = RoundedRectangle(cornerRadius: 10)
+        shape.fill()
+        if selected {
+          shape.strokeBorder(.blue, lineWidth: 4)
+        } else {
+          shape.strokeBorder(.gray, lineWidth: 1.5)
+        }
 
-      content(for: card)
-        .padding()
-        .foregroundColor(.fromCardColor(card.color))
+        content(for: card)
+          .padding(paddingForCard(width: geometryProxy.size.width))
+          .foregroundColor(.fromCardColor(card.color))
+      }
+      .foregroundColor(.white)
+      .onTapGesture {
+        print("Selected pressed. Its value: \(selected)")
+        selected.toggle()
     }
-    .foregroundColor(.white)
-    .onTapGesture {
-      print("Selected pressed. Its value: \(selected)")
-      selected.toggle()
     }
   }
   
@@ -71,11 +73,26 @@ struct CardView: View {
       return AnyShape(RoundedRectangle(cornerRadius: .infinity))
     }
   }
+  
+  func paddingForCard(width: CGFloat) -> CGFloat {
+    switch width {
+    case 0...60:
+      return 4
+    case 61...80:
+      return 8
+    case 81...100:
+      return 12
+    default:
+      return 16
+    }
+  }
 }
 
 struct CardView_Previews: PreviewProvider {
   static var previews: some View {
     let card = Card(numberOfShapes: 3, shape: .diamond, shading: .open, color: .purple)
     CardView(card: card)
+      .aspectRatio(2/3, contentMode: .fit)
+      .frame(width: 40)
   }
 }

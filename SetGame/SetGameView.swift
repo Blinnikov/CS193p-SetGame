@@ -26,16 +26,11 @@ struct SetGameView: View {
         }
       }
       
-      ScrollView {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 95), spacing: 0)]) {
-          ForEach(viewModel.cards) { card in
-            CardView(card: card)
-              .aspectRatio(2/3, contentMode: .fit)
-              .padding(4)
-          }
-        }
+      AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
+        CardView(card: card)
+          .padding(4)
       }
-      
+
       Button {
         viewModel.startNewGame()
       } label: {
