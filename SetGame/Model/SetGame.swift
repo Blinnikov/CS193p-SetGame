@@ -12,9 +12,6 @@ struct SetGame {
   private(set) var laidOutCards: [Card] = []
   private var chosenIndices: [Int] = []
   
-  // MARK: - temporary vars
-  private var isSet = true
-  
   init(cards: [Card]) {
     self.deck = cards.shuffled()
     
@@ -49,7 +46,7 @@ struct SetGame {
     }
     
     if chosenIndices.count == 3 {
-      if isSet {
+      if isSet(indices: chosenIndices) {
         // Increment Sets counter
         // Deal 3 new cards
         for index in chosenIndices.sorted(by: { $0 > $1}) {
@@ -86,12 +83,25 @@ struct SetGame {
     print(chosenIndices)
   }
   
-  mutating func selectCard(at index: Int) {
+  private func isSet(indices: [Int]) -> Bool {
+    guard indices.count == 3 else {
+      print("We need to have exactly 3 cards to check for set")
+      return false
+    }
+    
+    let firstCard = laidOutCards[indices[0]]
+    let secondCard = laidOutCards[indices[1]]
+    let thirdCard = laidOutCards[indices[2]]
+    
+    return SetChecker.checkCardsForSet(first: firstCard, second: secondCard, third: thirdCard)
+  }
+  
+  private mutating func selectCard(at index: Int) {
     chosenIndices.append(index)
     laidOutCards[index].selected = true
   }
   
-  mutating func deselectCard(at index: Int) {
+  private mutating func deselectCard(at index: Int) {
     chosenIndices.removeAll(where: { $0 == index })
     laidOutCards[index].selected = false
   }
