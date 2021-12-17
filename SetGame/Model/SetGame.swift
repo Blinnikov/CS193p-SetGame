@@ -10,6 +10,10 @@ import Foundation
 struct SetGame {
   private var deck: [Card]
   private(set) var laidOutCards: [Card] = []
+  private var chosenIndices: [Int] = []
+  
+  // MARK: - temporary vars
+  private var isSet = true
   
   init(cards: [Card]) {
     self.deck = cards.shuffled()
@@ -25,6 +29,8 @@ struct SetGame {
       
       self.laidOutCards.append(card)
     }
+    
+    print("Cards left: \(deck.count)")
   }
   
   mutating func swapCardsIn(indices: [Int]) {
@@ -36,14 +42,68 @@ struct SetGame {
       self.laidOutCards[index] = card
     }
   }
+  
+  mutating func choose(_ card: Card) {
+    guard let chosenIndex = laidOutCards.firstIndex(where: { $0.id == card.id}) else {
+      return
+    }
+    
+    if chosenIndices.count == 3 {
+      if isSet {
+        // Increment Sets counter
+        // Deal 3 new cards
+        for index in chosenIndices.sorted(by: { $0 > $1}) {
+          print(index)
+          guard let card = self.deck.popLast() else {
+            laidOutCards.remove(at: index)
+            continue
+          }
+          laidOutCards[index] = card
+        }
+        // Empty selection
+        chosenIndices = []
+        // Select that card if not part of the set
+      } else {
+        // Empty selection
+        for index in laidOutCards.indices {
+          laidOutCards[index].selected = false
+        }
+        chosenIndices = []
+        // Select that card
+        selectCard(at: chosenIndex)
+        return
+      }
+    }
+    
+    if card.selected {
+      // remove from chosenIndices
+      deselectCard(at: chosenIndex)
+    } else {
+      // add to chosenIndices
+      selectCard(at: chosenIndex)
+    }
+    
+    print(chosenIndices)
+  }
+  
+  mutating func selectCard(at index: Int) {
+    chosenIndices.append(index)
+    laidOutCards[index].selected = true
+  }
+  
+  mutating func deselectCard(at index: Int) {
+    chosenIndices.removeAll(where: { $0 == index })
+    laidOutCards[index].selected = false
+  }
 }
 
 struct Card: Identifiable {
+  let id = UUID()
   let numberOfShapes: Int
   let shape: Shape
   let shading: Shading
   let color: Color
-  let id = UUID()
+  var selected = false
   
   enum Shape: CaseIterable {
     case diamond
