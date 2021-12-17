@@ -43,4 +43,9 @@ class SetViewModel: ObservableObject {
     
     return deck
   }
+  
+  // MARK: - Intent(s)
+  func choose(_ card: Card) {
+    model.choose(card)
+  }
 }

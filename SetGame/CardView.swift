@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CardView: View {
   let card: Card
-  @State private var selected = false
   
   var body: some View {
     
@@ -17,7 +16,7 @@ struct CardView: View {
       ZStack {
         let shape = RoundedRectangle(cornerRadius: 10)
         shape.fill()
-        if selected {
+        if card.selected {
           shape.strokeBorder(.blue, lineWidth: 4)
         } else {
           shape.strokeBorder(.gray, lineWidth: 1.5)
@@ -28,10 +27,6 @@ struct CardView: View {
           .foregroundColor(.fromCardColor(card.color))
       }
       .foregroundColor(.white)
-      .onTapGesture {
-        print("Selected pressed. Its value: \(selected)")
-        selected.toggle()
-    }
     }
   }
   
