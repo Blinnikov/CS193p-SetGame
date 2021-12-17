@@ -6,6 +6,7 @@
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata
+*.xcuserstate
 .DS_Store
 xcuserdata/
 
