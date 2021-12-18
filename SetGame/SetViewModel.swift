@@ -27,7 +27,7 @@ class SetViewModel: ObservableObject {
   }
   
   func laidOutMoreCards() {
-    self.model.laidOutNextCards(3)
+    self.model.laidOutMoreCards()
   }
   
   private static func createSetGame() -> SetGame {

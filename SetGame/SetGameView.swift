@@ -27,6 +27,7 @@ struct SetGameView: View {
           Image(systemName: "rectangle.stack.badge.plus")
           Text("3 more cards")
         }
+        .disabled(viewModel.numberOfCardsInDeck <= 0)
       }
       
       AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in

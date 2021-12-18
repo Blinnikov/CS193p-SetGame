@@ -19,25 +19,13 @@ struct SetGame {
     self.laidOutNextCards(12)
   }
   
-  mutating func laidOutNextCards(_ amount: Int) {
-    for _ in 0..<amount {
-      guard let card = self.deck.popLast() else {
-        break
-      }
-      
-      self.laidOutCards.append(card)
-    }
+  mutating func laidOutMoreCards() {
+    defer { print("Cards left: \(deck.count)") }
     
-    print("Cards left: \(deck.count)")
-  }
-  
-  mutating func swapCardsIn(indices: [Int]) {
-    for index in indices {
-      guard let card = self.deck.popLast() else {
-        break
-      }
-      
-      self.laidOutCards[index] = card
+    if isSet(indices: chosenIndices) {
+      replaceCards(at: chosenIndices)
+    } else {
+      laidOutNextCards(3)
     }
   }
   
@@ -123,6 +111,16 @@ struct SetGame {
     let thirdCard = laidOutCards[indices[2]]
     
     return SetChecker.checkCardsForSet(first: firstCard, second: secondCard, third: thirdCard)
+  }
+  
+  private mutating func laidOutNextCards(_ amount: Int) {
+    for _ in 0..<amount {
+      guard let card = self.deck.popLast() else {
+        break
+      }
+      
+      self.laidOutCards.append(card)
+    }
   }
   
   private mutating func removeCards(at indices: [Int]) {
