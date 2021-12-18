@@ -26,7 +26,7 @@ struct CardView: View {
           .padding(paddingForCard(width: geometryProxy.size.width))
           .foregroundColor(.fromCardColor(card.color))
       }
-      .foregroundColor(.white)
+      .foregroundColor(foregroundColorFor(card: card))
     }
   }
   
@@ -80,6 +80,15 @@ struct CardView: View {
     default:
       return 16
     }
+  }
+  
+  func foregroundColorFor(card: Card) -> Color {
+    if let isPartOfASet = card.isPartOfASet {
+      let color = isPartOfASet ? Color.yellow : .gray
+      return color.opacity(0.2)
+    }
+    
+    return .white
   }
 }
 

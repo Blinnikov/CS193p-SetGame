@@ -45,9 +45,13 @@ struct SetGame {
       return
     }
     
+    // We're choosing 4th card
+    // Let's deal next 3 cards
     if chosenIndices.count == 3 {
+      // TODO: We can probe for a set here by checling `isPartOfASet` property
       if isSet(indices: chosenIndices) {
         // Increment Sets counter
+        // - We incremented it on 3d card selection, but here is also a place.
         // Deal 3 new cards
         for index in chosenIndices.sorted(by: { $0 > $1}) {
           print(index)
@@ -61,6 +65,9 @@ struct SetGame {
         chosenIndices = []
         // Select that card if not part of the set
       } else {
+        // Mark as having no set
+        // TODO: Probably extract as a separate method
+        markCards(atIndices: chosenIndices, asHavingSet: nil)
         // Empty selection
         for index in laidOutCards.indices {
           laidOutCards[index].selected = false
@@ -80,6 +87,17 @@ struct SetGame {
       selectCard(at: chosenIndex)
     }
     
+    // We've already selected 3 cards
+    // Check them for set
+    if chosenIndices.count == 3 {
+      if isSet(indices: chosenIndices) {
+        markCards(atIndices: chosenIndices, asHavingSet: true)
+        // Increment Sets counter
+      } else {
+        markCards(atIndices: chosenIndices, asHavingSet: false)
+      }
+    }
+    
     print(chosenIndices)
   }
   
@@ -94,6 +112,12 @@ struct SetGame {
     let thirdCard = laidOutCards[indices[2]]
     
     return SetChecker.checkCardsForSet(first: firstCard, second: secondCard, third: thirdCard)
+  }
+  
+  private mutating func markCards(atIndices indices: [Int], asHavingSet: Bool?) {
+    for index in indices {
+      laidOutCards[index].isPartOfASet = asHavingSet
+    }
   }
   
   private mutating func selectCard(at index: Int) {
@@ -114,6 +138,7 @@ struct Card: Identifiable {
   let shading: Shading
   let color: Color
   var selected = false
+  var isPartOfASet: Bool?
   
   enum Shape: CaseIterable {
     case diamond
