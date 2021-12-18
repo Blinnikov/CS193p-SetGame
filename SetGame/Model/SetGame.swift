@@ -42,7 +42,7 @@ struct SetGame {
   }
   
   mutating func choose(_ card: Card) {
-    guard let chosenIndex = laidOutCards.firstIndex(where: { $0.id == card.id}) else {
+    guard var chosenIndex = laidOutCards.firstIndex(where: { $0.id == card.id}) else {
       return
     }
     
@@ -53,19 +53,26 @@ struct SetGame {
       if isSet(indices: chosenIndices) {
         // Increment Sets counter
         // - We incremented it on 3d card selection, but here is also a place.
-        // Deal 3 new cards
-        for index in chosenIndices.sorted(by: { $0 > $1}) {
-          print(index)
-          guard let card = self.deck.popLast() else {
-            // BUG: We cannot mutate collection here because `chosenIndex` is set and it will be wrong after the loop
-            // Either mark card with a tombstone or make it nullable
-            laidOutCards.remove(at: index)
-            continue
+        
+        // Check if 3 new cards can be dealt
+        if deck.isEmpty {
+          let returnWithoutSelection = chosenIndices.contains(chosenIndex)
+          removeCards(at: chosenIndices)
+          if returnWithoutSelection {
+            // Empty selection
+            chosenIndices = []
+            return
+          } else {
+            // Empty selection
+            chosenIndex = calculateNewChosenIndex(chosenIndex, for: chosenIndices)
+            chosenIndices = []
           }
-          laidOutCards[index] = card
+        } else {
+          // Deal 3 new cards
+          replaceCards(at: chosenIndices)
+          // Empty selection
+          chosenIndices = []
         }
-        // Empty selection
-        chosenIndices = []
         // Select that card if not part of the set
       } else {
         // Mark as having no set
@@ -116,6 +123,31 @@ struct SetGame {
     let thirdCard = laidOutCards[indices[2]]
     
     return SetChecker.checkCardsForSet(first: firstCard, second: secondCard, third: thirdCard)
+  }
+  
+  private mutating func removeCards(at indices: [Int]) {
+    for index in indices.sorted(by: { $0 > $1}) {
+      laidOutCards.remove(at: index)
+    }
+  }
+  
+  private mutating func replaceCards(at indices: [Int]) {
+    for index in indices {
+      guard let card = self.deck.popLast() else {
+        continue
+      }
+      laidOutCards[index] = card
+    }
+  }
+  
+  private func calculateNewChosenIndex(_ chosenIndex: Int, for indices: [Int]) -> Int {
+    var step = 0
+    for index in indices {
+      if chosenIndex > index {
+        step += 1
+      }
+    }
+    return chosenIndex - step
   }
   
   private mutating func markCards(atIndices indices: [Int], asHavingSet: Bool?) {
