@@ -17,6 +17,9 @@ struct SetGameView: View {
   var body: some View {
     VStack {
       HStack {
+        Text("Sets: \(viewModel.numberOfSets)")
+        Spacer()
+        Text("Deck: \(viewModel.numberOfCardsInDeck) cards")
         Spacer()
         Button {
           viewModel.laidOutMoreCards()

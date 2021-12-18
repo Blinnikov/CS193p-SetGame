@@ -14,6 +14,14 @@ class SetViewModel: ObservableObject {
     model.laidOutCards
   }
   
+  var numberOfCardsInDeck: Int {
+    model.deck.count
+  }
+  
+  var numberOfSets: Int {
+    model.numberOfSets
+  }
+  
   func startNewGame() {
     self.model = SetViewModel.createSetGame()
   }

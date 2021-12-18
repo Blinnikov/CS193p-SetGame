@@ -8,9 +8,10 @@
 import Foundation
 
 struct SetGame {
-  private var deck: [Card]
+  private(set) var deck: [Card]
   private(set) var laidOutCards: [Card] = []
   private var chosenIndices: [Int] = []
+  private(set) var numberOfSets = 0
   
   init(cards: [Card]) {
     self.deck = cards.shuffled()
@@ -56,6 +57,8 @@ struct SetGame {
         for index in chosenIndices.sorted(by: { $0 > $1}) {
           print(index)
           guard let card = self.deck.popLast() else {
+            // BUG: We cannot mutate collection here because `chosenIndex` is set and it will be wrong after the loop
+            // Either mark card with a tombstone or make it nullable
             laidOutCards.remove(at: index)
             continue
           }
@@ -93,6 +96,7 @@ struct SetGame {
       if isSet(indices: chosenIndices) {
         markCards(atIndices: chosenIndices, asHavingSet: true)
         // Increment Sets counter
+        numberOfSets += 1
       } else {
         markCards(atIndices: chosenIndices, asHavingSet: false)
       }
