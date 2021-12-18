@@ -44,7 +44,7 @@ class SetGameTests: XCTestCase {
     XCTAssertTrue(isSet)
   }
   
-  func testForSet3() {
+  func testForNonSet() {
     let firstCard = Card(numberOfShapes: 3, shape: .diamond, shading: .solid, color: .red)
     let secondCard = Card(numberOfShapes: 2, shape: .squiggle, shading: .solid, color: .red)
     let thirdCard = Card(numberOfShapes: 1, shape: .oval, shading: .solid, color: .purple)

@@ -4,6 +4,7 @@
 
 ## User settings
 *.xcodeproj/*
+*.xcodeproj/project.xcworkspace/xcuserdata
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata
 *.xcuserstate
