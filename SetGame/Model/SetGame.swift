@@ -12,7 +12,6 @@ struct SetGame {
   private(set) var laidOutCards: [Card] = []
   private(set) var discardPile: [Card] = []
   private var chosenIndices: [Int] = []
-  private(set) var numberOfSets = 0
   
   init(cards: [Card]) {
     self.deck = cards.shuffled()
@@ -43,25 +42,16 @@ struct SetGame {
         // Increment Sets counter
         // - We incremented it on 3d card selection, but here is also a place.
         
-        // Check if 3 new cards can be dealt
-        if deck.isEmpty {
-          let returnWithoutSelection = chosenIndices.contains(chosenIndex)
-          removeCards(at: chosenIndices)
-          if returnWithoutSelection {
-            // Empty selection
-            chosenIndices = []
-            return
-          } else {
-            // Empty selection
-            chosenIndex = calculateNewChosenIndex(chosenIndex, for: chosenIndices)
-            chosenIndices = []
-          }
+        let newChosenIndex = calculateNewChosenIndex(chosenIndex, for: chosenIndices)
+        discardCards(at: chosenIndices)
+        chosenIndices = []
+        
+        if let newChosenIndex = newChosenIndex {
+          chosenIndex = newChosenIndex
         } else {
-          // Deal 3 new cards
-          replaceCards(at: chosenIndices)
-          // Empty selection
-          chosenIndices = []
+          return
         }
+        
         // Select that card if not part of the set
       } else {
         // Mark as having no set
@@ -92,7 +82,6 @@ struct SetGame {
       if isSet(indices: chosenIndices) {
         markCards(atIndices: chosenIndices, asHavingSet: true)
         // Increment Sets counter
-        numberOfSets += 1
       } else {
         markCards(atIndices: chosenIndices, asHavingSet: false)
       }
@@ -124,9 +113,9 @@ struct SetGame {
     }
   }
   
-  private mutating func removeCards(at indices: [Int]) {
+  private mutating func discardCards(at indices: [Int]) {
     for index in indices.sorted(by: { $0 > $1}) {
-      laidOutCards.remove(at: index)
+      moveCardToDiscardPile(from: index)
     }
   }
   
@@ -135,14 +124,16 @@ struct SetGame {
       guard let card = self.deck.popLast() else {
         continue
       }
-      moveCardToDiscardPile(from: index)
-      laidOutCards[index] = card
+      moveCardToDiscardPile(from: index, withReplacement: card)
     }
   }
   
-  private func calculateNewChosenIndex(_ chosenIndex: Int, for indices: [Int]) -> Int {
+  private func calculateNewChosenIndex(_ chosenIndex: Int, for indices: [Int]) -> Int? {
     var step = 0
     for index in indices {
+      if chosenIndex == index {
+        return nil
+      }
       if chosenIndex > index {
         step += 1
       }
@@ -167,10 +158,18 @@ struct SetGame {
   }
   
   // MARK: - Assignment 4
-  private mutating func moveCardToDiscardPile(from index: Int) {
-    var card = laidOutCards[index]
-    card.isPartOfASet = nil
-    discardPile.append(card)
+  private mutating func moveCardToDiscardPile(from index: Int, withReplacement card: Card? = nil) {
+    // Add to discard pile
+    laidOutCards[index].isPartOfASet = nil
+    discardPile.append(laidOutCards[index])
+    
+    if let card = card {
+      // Replace with a new one
+      laidOutCards[index] = card
+    } else {
+      // Remove from laid out cards
+      laidOutCards.remove(at: index)
+    }
   }
 }
 

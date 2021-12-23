@@ -22,10 +22,6 @@ class SetViewModel: ObservableObject {
     model.discardPile
   }
   
-  var numberOfSets: Int {
-    model.numberOfSets
-  }
-  
   func startNewGame() {
     self.model = SetViewModel.createSetGame()
   }
