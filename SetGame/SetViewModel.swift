@@ -14,8 +14,12 @@ class SetViewModel: ObservableObject {
     model.laidOutCards
   }
   
-  var numberOfCardsInDeck: Int {
-    model.deck.count
+  var deck: [Card] {
+    model.deck
+  }
+  
+  var discardPile: [Card] {
+    model.discardPile
   }
   
   var numberOfSets: Int {

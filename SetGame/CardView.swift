@@ -9,22 +9,27 @@ import SwiftUI
 
 struct CardView: View {
   let card: Card
+  var isFaceUp = true
   
   var body: some View {
     
     GeometryReader { geometryProxy in
       ZStack {
         let shape = RoundedRectangle(cornerRadius: 10)
-        shape.fill()
-        if card.selected {
-          shape.strokeBorder(.blue, lineWidth: 4)
+        if isFaceUp {
+          shape.fill()
+          if card.selected {
+            shape.strokeBorder(.blue, lineWidth: 4)
+          } else {
+            shape.strokeBorder(.gray, lineWidth: 1.5)
+          }
+          
+          content(for: card)
+            .padding(paddingForCard(width: geometryProxy.size.width))
+            .foregroundColor(.fromCardColor(card.color))
         } else {
-          shape.strokeBorder(.gray, lineWidth: 1.5)
+          shape.fill().foregroundColor(.red)
         }
-
-        content(for: card)
-          .padding(paddingForCard(width: geometryProxy.size.width))
-          .foregroundColor(.fromCardColor(card.color))
       }
       .foregroundColor(foregroundColorFor(card: card))
     }
@@ -94,9 +99,9 @@ struct CardView: View {
 
 struct CardView_Previews: PreviewProvider {
   static var previews: some View {
-    let card = Card(numberOfShapes: 3, shape: .diamond, shading: .open, color: .purple)
+    let card = Card(numberOfShapes: 3, shape: .diamond, shading: .open, color: .purple, isPartOfASet: true)
     CardView(card: card)
       .aspectRatio(2/3, contentMode: .fit)
-      .frame(width: 40)
+      .frame(width: 240)
   }
 }

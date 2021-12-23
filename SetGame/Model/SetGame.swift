@@ -10,6 +10,7 @@ import Foundation
 struct SetGame {
   private(set) var deck: [Card]
   private(set) var laidOutCards: [Card] = []
+  private(set) var discardPile: [Card] = []
   private var chosenIndices: [Int] = []
   private(set) var numberOfSets = 0
   
@@ -134,6 +135,7 @@ struct SetGame {
       guard let card = self.deck.popLast() else {
         continue
       }
+      moveCardToDiscardPile(from: index)
       laidOutCards[index] = card
     }
   }
@@ -162,6 +164,13 @@ struct SetGame {
   private mutating func deselectCard(at index: Int) {
     chosenIndices.removeAll(where: { $0 == index })
     laidOutCards[index].selected = false
+  }
+  
+  // MARK: - Assignment 4
+  private mutating func moveCardToDiscardPile(from index: Int) {
+    var card = laidOutCards[index]
+    card.isPartOfASet = nil
+    discardPile.append(card)
   }
 }
 
