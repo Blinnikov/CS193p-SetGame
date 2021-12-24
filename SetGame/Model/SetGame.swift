@@ -161,6 +161,7 @@ struct SetGame {
   private mutating func moveCardToDiscardPile(from index: Int, withReplacement card: Card? = nil) {
     // Add to discard pile
     laidOutCards[index].isPartOfASet = nil
+    laidOutCards[index].selected = false
     discardPile.append(laidOutCards[index])
     
     if let card = card {
