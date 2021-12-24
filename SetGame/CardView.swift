@@ -19,7 +19,7 @@ struct CardView: View {
         if isFaceUp {
           shape.fill()
           if card.selected {
-            shape.strokeBorder(.blue, lineWidth: 4)
+            shape.strokeBorder(.blue, lineWidth: 2.5)
           } else {
             shape.strokeBorder(.gray, lineWidth: 1.5)
           }
@@ -77,7 +77,7 @@ struct CardView: View {
   func paddingForCard(width: CGFloat) -> CGFloat {
     switch width {
     case 0...60:
-      return 4
+      return 6
     case 61...80:
       return 8
     case 81...100:
