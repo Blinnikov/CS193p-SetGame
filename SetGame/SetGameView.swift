@@ -16,6 +16,19 @@ struct SetGameView: View {
     self.viewModel = viewModel
   }
   
+  func matchAnimation(isMatched: Bool?) -> Animation? {
+    if isMatched == nil {
+      return nil
+    }
+    
+    return .spring(response: 0.7, dampingFraction: 0.1)
+  }
+  
+  func rotationDegreesForDiscardedCard(_ card: Card) -> Angle {
+    let degree = Double(card.id.uuidString.hash % 21 - 10) // -10...10
+    return .degrees(degree)
+  }
+  
   var body: some View {
     VStack {
       HStack {
@@ -27,6 +40,8 @@ struct SetGameView: View {
       AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
         CardView(card: card)
           .matchedGeometryEffect(id: card.id, in: setNamespace)
+          .scaleEffect(card.isPartOfASet != nil && card.isPartOfASet! ? 1.05 : 1.0)
+          .animation(matchAnimation(isMatched: card.isPartOfASet), value: card.isPartOfASet)
           .padding(4)
           .onTapGesture {
             withAnimation {
@@ -47,7 +62,7 @@ struct SetGameView: View {
   }
   
   var deck: some View {
-    VStack {
+    VStack(alignment: .leading) {
       if viewModel.deck.isEmpty {
         emptyPile
       }
@@ -70,7 +85,7 @@ struct SetGameView: View {
   }
   
   var discardPile: some View {
-    VStack {
+    VStack(alignment: .trailing) {
       if viewModel.discardPile.isEmpty {
         emptyPile
       } else {
@@ -78,6 +93,7 @@ struct SetGameView: View {
           ForEach(viewModel.discardPile) { card in
             CardView(card: card)
               .matchedGeometryEffect(id: card.id, in: setNamespace)
+              .rotationEffect(rotationDegreesForDiscardedCard(card))
               .frame(width: CardConstants.DeckCardWidth, height: CardConstants.DeckCardHeight)
           }
         }
