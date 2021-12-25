@@ -9,29 +9,14 @@ import SwiftUI
 
 struct CardView: View {
   let card: Card
-  var isFaceUp = true
   
   var body: some View {
-    
     GeometryReader { geometryProxy in
-      ZStack {
-        let shape = RoundedRectangle(cornerRadius: 10)
-        if isFaceUp {
-          shape.fill()
-          if card.selected {
-            shape.strokeBorder(.blue, lineWidth: 2.5)
-          } else {
-            shape.strokeBorder(.gray, lineWidth: 1.5)
-          }
-          
-          content(for: card)
-            .padding(paddingForCard(width: geometryProxy.size.width))
-            .foregroundColor(.fromCardColor(card.color))
-        } else {
-          shape.fill().foregroundColor(.red)
-        }
-      }
-      .foregroundColor(foregroundColorFor(card: card))
+      content(for: card)
+        .padding(paddingForCard(width: geometryProxy.size.width))
+        .foregroundColor(.fromCardColor(card.color))
+        .cardify(isFaceUp: card.isFaceUp, isSelected: card.selected)
+        .foregroundColor(foregroundColorFor(card: card))
     }
   }
   
@@ -99,9 +84,9 @@ struct CardView: View {
 
 struct CardView_Previews: PreviewProvider {
   static var previews: some View {
-    let card = Card(numberOfShapes: 3, shape: .diamond, shading: .open, color: .purple, isPartOfASet: true)
+    let card = Card(numberOfShapes: 1, shape: .diamond, shading: .solid, color: .green, selected: true, isFaceUp: true, isPartOfASet: true)
     CardView(card: card)
-      .aspectRatio(2/3, contentMode: .fit)
-      .frame(width: 240)
+//      .aspectRatio(2/3, contentMode: .fit)
+      .frame(width: 60, height: 90)
   }
 }
