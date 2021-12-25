@@ -69,7 +69,7 @@ struct SetGameView: View {
       else {
         ZStack {
           ForEach(viewModel.deck) { card in
-            CardView(card: card, isFaceUp: false)
+            CardView(card: card)
               .matchedGeometryEffect(id: card.id, in: setNamespace)
               .frame(width: CardConstants.DeckCardWidth, height: CardConstants.DeckCardHeight)
           }

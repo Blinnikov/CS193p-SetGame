@@ -109,6 +109,7 @@ struct SetGame {
         break
       }
       
+//      card.isFaceUp = true
       self.laidOutCards.append(card)
     }
   }
@@ -181,6 +182,7 @@ struct Card: Identifiable {
   let shading: Shading
   let color: Color
   var selected = false
+  var isFaceUp = false
   var isPartOfASet: Bool?
   
   enum Shape: CaseIterable {
