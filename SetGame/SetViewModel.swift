@@ -36,6 +36,11 @@ class SetViewModel: ObservableObject {
   }
   
   private static func createDeck() -> [Card] {
+    let deck = createBasicNonShuffledDeck()
+    return shuffleCardsAndUpdateIndices(for: deck)
+  }
+  
+  private static func createBasicNonShuffledDeck() -> [Card] {
     var deck: [Card] = []
     
     for number in 1...3 {
@@ -50,6 +55,19 @@ class SetViewModel: ObservableObject {
     }
     
     return deck
+  }
+  
+  private static func shuffleCardsAndUpdateIndices(for deck: [Card]) -> [Card] {
+    var result: [Card] = []
+    var index = 0
+    
+    for var card in deck.shuffled() {
+      index += 1
+      card.index = index
+      result.append(card)
+    }
+    
+    return result
   }
   
   // MARK: - Intent(s)

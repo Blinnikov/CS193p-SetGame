@@ -14,7 +14,7 @@ struct SetGame {
   private var chosenIndices: [Int] = []
   
   init(cards: [Card]) {
-    self.deck = cards.shuffled()
+    self.deck = cards
     
     self.laidOutNextCards(12)
   }
@@ -25,7 +25,7 @@ struct SetGame {
     if isSet(indices: chosenIndices) {
       replaceCards(at: chosenIndices)
     } else {
-      laidOutNextCards(3)
+      laidOutNextCards(1)
     }
   }
   
@@ -105,12 +105,26 @@ struct SetGame {
   
   private mutating func laidOutNextCards(_ amount: Int) {
     for _ in 0..<amount {
-      guard let card = self.deck.popLast() else {
+//      print("Deck count: \(deck.count)")
+//      guard let card = self.deck.popLast() else {
+//        break
+//      }
+      
+      if self.deck.isEmpty {
         break
       }
-      
+
+//      self.deck[0].isFaceUp = true
+//      var card = self.deck.removeFirst()
 //      card.isFaceUp = true
-      self.laidOutCards.append(card)
+//      print("Dealing: \(card)")
+//      print("Deck count: \(deck.count)")
+
+//      if self.deck[0].index < 13 {
+      var card = self.deck.removeFirst()
+        self.laidOutCards.append(card)
+//      self.laidOutCards[laidOutCards.count - 1].isFaceUp = true
+//      }
     }
   }
   
@@ -181,6 +195,7 @@ struct Card: Identifiable {
   let shape: Shape
   let shading: Shading
   let color: Color
+  var index: Int = -1
   var selected = false
   var isFaceUp = false
   var isPartOfASet: Bool?
