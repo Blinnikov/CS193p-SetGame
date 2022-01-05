@@ -37,12 +37,6 @@ struct SetGameView: View {
   
   var body: some View {
     VStack {
-      HStack {
-        deck
-        Spacer()
-        discardPile
-      }
-      
       AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
         CardView(card: card)
           .matchedGeometryEffect(id: card.id, in: setNamespace)
@@ -55,7 +49,12 @@ struct SetGameView: View {
             }
           }
       }
-      .zIndex(-100) // Need to check whether it's what we need
+      
+      HStack {
+        deck
+        Spacer()
+        discardPile
+      }
 
       Button {
         viewModel.startNewGame()
