@@ -24,6 +24,12 @@ struct SetGameView: View {
     return .spring(response: 0.7, dampingFraction: 0.1)
   }
   
+  private func zIndex(of card: Card, isInDeck: Bool = false) -> Double {
+    isInDeck
+      ? 81 - Double(card.index)
+      : Double(card.index)
+  }
+  
   func rotationDegreesForDiscardedCard(_ card: Card) -> Angle {
     let degree = Double(card.id.uuidString.hash % 21 - 10) // -10...10
     return .degrees(degree)
