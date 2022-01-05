@@ -25,7 +25,7 @@ struct SetGame {
     if isSet(indices: chosenIndices) {
       replaceCards(at: chosenIndices)
     } else {
-      laidOutNextCards(1)
+      laidOutNextCards(3)
     }
   }
   
@@ -105,7 +105,6 @@ struct SetGame {
   
   private mutating func laidOutNextCards(_ amount: Int) {
     for _ in 0..<amount {
-//      print("Deck count: \(deck.count)")
 //      guard let card = self.deck.popLast() else {
 //        break
 //      }
@@ -113,18 +112,10 @@ struct SetGame {
       if self.deck.isEmpty {
         break
       }
-
-//      self.deck[0].isFaceUp = true
-//      var card = self.deck.removeFirst()
-//      card.isFaceUp = true
-//      print("Dealing: \(card)")
-//      print("Deck count: \(deck.count)")
-
-//      if self.deck[0].index < 13 {
+      
       var card = self.deck.removeFirst()
-        self.laidOutCards.append(card)
-//      self.laidOutCards[laidOutCards.count - 1].isFaceUp = true
-//      }
+//      card.isFaceUp = true
+      self.laidOutCards.append(card)
     }
   }
   
