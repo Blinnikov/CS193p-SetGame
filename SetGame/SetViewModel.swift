@@ -63,7 +63,7 @@ class SetViewModel: ObservableObject {
     
     for var card in deck.shuffled() {
       index += 1
-      card.index = index
+      card.orderInDeck = index
       result.append(card)
     }
     

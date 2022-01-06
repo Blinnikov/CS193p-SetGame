@@ -113,7 +113,7 @@ struct SetGame {
         break
       }
       
-      var card = self.deck.removeFirst()
+      let card = self.deck.removeFirst()
 //      card.isFaceUp = true
       self.laidOutCards.append(card)
     }
@@ -186,7 +186,7 @@ struct Card: Identifiable {
   let shape: Shape
   let shading: Shading
   let color: Color
-  var index: Int = -1
+  var orderInDeck: Int = -1
   var selected = false
   var isFaceUp = false
   var isPartOfASet: Bool?
