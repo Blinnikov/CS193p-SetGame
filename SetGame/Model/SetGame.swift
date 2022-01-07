@@ -8,13 +8,15 @@
 import Foundation
 
 struct SetGame {
-  private(set) var deck: [Card]
+  let fullDeck: [Card]
+  private var playingDeck: [Card]
   private(set) var laidOutCards: [Card] = []
   private(set) var discardPile: [Card] = []
   private var chosenIndices: [Int] = []
   
   init(cards: [Card]) {
-    self.deck = cards
+    self.fullDeck = cards
+    self.playingDeck = cards
     
     self.laidOutNextCards(12)
   }
@@ -109,11 +111,11 @@ struct SetGame {
 //        break
 //      }
       
-      if self.deck.isEmpty {
+      if self.playingDeck.isEmpty {
         break
       }
       
-      let card = self.deck.removeFirst()
+      let card = self.playingDeck.removeFirst()
 //      card.isFaceUp = true
       self.laidOutCards.append(card)
     }
@@ -127,7 +129,8 @@ struct SetGame {
   
   private mutating func replaceCards(at indices: [Int]) {
     for index in indices {
-      guard let card = self.deck.popLast() else {
+      // TODO: Change to .removeFirst ?
+      guard let card = self.playingDeck.popLast() else {
         continue
       }
       moveCardToDiscardPile(from: index, withReplacement: card)

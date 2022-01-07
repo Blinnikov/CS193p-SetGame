@@ -9,11 +9,20 @@ import SwiftUI
 
 struct SetGameView: View {
   @ObservedObject var viewModel: SetViewModel
+  @State private var dealt = Set<UUID>()
   
   @Namespace private var setNamespace
   
   init(viewModel: SetViewModel) {
     self.viewModel = viewModel
+  }
+  
+  private func deal(_ card: Card) {
+    dealt.insert(card.id)
+  }
+  
+  private func isUndealt(_ card: Card) -> Bool {
+    !dealt.contains(card.id)
   }
   
   func matchAnimation(isMatched: Bool?) -> Animation? {
@@ -73,7 +82,7 @@ struct SetGameView: View {
       }
       else {
         ZStack {
-          ForEach(viewModel.deck) { card in
+          ForEach(viewModel.deck.filter(isUndealt)) { card in
             CardView(card: card)
               .matchedGeometryEffect(id: card.id, in: setNamespace)
               .frame(width: CardConstants.DeckCardWidth, height: CardConstants.DeckCardHeight)
