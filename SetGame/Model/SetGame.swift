@@ -17,17 +17,16 @@ struct SetGame {
   init(cards: [Card]) {
     self.fullDeck = cards
     self.playingDeck = cards
-    
-    self.laidOutNextCards(12)
   }
   
-  mutating func laidOutMoreCards() {
-    defer { print("Cards left: \(deck.count)") }
+  mutating func laidOutMoreCards() -> [Card] {
+    defer { print("Cards left: \(playingDeck.count)") }
     
     if isSet(indices: chosenIndices) {
-      replaceCards(at: chosenIndices)
+      return replaceCards(at: chosenIndices)
     } else {
-      laidOutNextCards(3)
+      let amount = self.laidOutCards.isEmpty ? 12 : 3
+      return laidOutNextCards(amount)
     }
   }
   
@@ -105,20 +104,20 @@ struct SetGame {
     return SetChecker.checkCardsForSet(first: firstCard, second: secondCard, third: thirdCard)
   }
   
-  private mutating func laidOutNextCards(_ amount: Int) {
+  private mutating func laidOutNextCards(_ amount: Int) -> [Card] {
+    var newPortionOfLaidOutCards: [Card] = []
+    
     for _ in 0..<amount {
-//      guard let card = self.deck.popLast() else {
-//        break
-//      }
-      
-      if self.playingDeck.isEmpty {
+      guard var card = drawACardFromTheDeck() else {
         break
       }
       
-      let card = self.playingDeck.removeFirst()
-//      card.isFaceUp = true
-      self.laidOutCards.append(card)
+      card.isFaceUp = true
+      newPortionOfLaidOutCards.append(card)
     }
+    
+    self.laidOutCards.append(contentsOf: newPortionOfLaidOutCards)
+    return newPortionOfLaidOutCards
   }
   
   private mutating func discardCards(at indices: [Int]) {
@@ -127,14 +126,22 @@ struct SetGame {
     }
   }
   
-  private mutating func replaceCards(at indices: [Int]) {
-    for index in indices {
-      // TODO: Change to .removeFirst ?
-      guard let card = self.playingDeck.popLast() else {
+  private mutating func replaceCards(at indices: [Int]) -> [Card] {
+    var result: [Card] = []
+    for index in indices.sorted() {
+      guard let card = drawACardFromTheDeck() else {
         continue
       }
+      result.append(card)
       moveCardToDiscardPile(from: index, withReplacement: card)
     }
+    return result
+  }
+  
+  private mutating func drawACardFromTheDeck() -> Card? {
+    // self.playingDeck.removeFirst() - is also an option but with O(n) complexity
+    // whereas current method has O(1)
+    self.playingDeck.popLast()
   }
   
   private func calculateNewChosenIndex(_ chosenIndex: Int, for indices: [Int]) -> Int? {
