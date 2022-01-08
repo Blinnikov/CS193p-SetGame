@@ -35,8 +35,8 @@ struct SetGameView: View {
   
   private func zIndex(of card: Card, isInDeck: Bool = false) -> Double {
     isInDeck
-      ? 81 - Double(card.index)
-      : Double(card.index)
+      ? Double(card.orderInDeck)
+      : 81 - Double(card.orderInDeck)
   }
   
   func rotationDegreesForDiscardedCard(_ card: Card) -> Angle {
@@ -44,19 +44,40 @@ struct SetGameView: View {
     return .degrees(degree)
   }
   
+  private func dealAnimation(for card: Card?, with delay: Double) -> Animation {
+    return Animation.easeInOut(duration: 0.2).delay(delay)
+  }
+  
   var body: some View {
     VStack {
       AspectVGrid(items: viewModel.cards, aspectRatio: 2/3) { card in
-        CardView(card: card)
-          .matchedGeometryEffect(id: card.id, in: setNamespace)
-          .scaleEffect(card.isPartOfASet != nil && card.isPartOfASet! ? 1.05 : 1.0)
-          .animation(matchAnimation(isMatched: card.isPartOfASet), value: card.isPartOfASet)
-          .padding(4)
-          .onTapGesture {
-            withAnimation {
-              viewModel.choose(card)
-            }
+        let z = zIndex(of: card)
+        
+        if isUndealt(card) {
+          Color.clear
+        } else {
+          CardView(card: card)
+            .matchedGeometryEffect(id: card.id, in: setNamespace)
+            .scaleEffect(card.isPartOfASet != nil && card.isPartOfASet! ? 1.05 : 1.0)
+            .animation(matchAnimation(isMatched: card.isPartOfASet), value: card.isPartOfASet)
+            .padding(4)
+            .transition(AnyTransition.asymmetric(insertion: .identity, removal: .identity))
+            .zIndex(z)
+            .onTapGesture {
+              withAnimation {
+                viewModel.choose(card)
+              }
           }
+        }
+      }
+      .onAppear {
+        var cardDelay = 0.2
+        for card in viewModel.laidOutMoreCards() {
+          withAnimation(dealAnimation(for: nil, with: cardDelay)) {
+            deal(card)
+          }
+          cardDelay += 0.2
+        }
       }
       
       HStack {
@@ -83,14 +104,22 @@ struct SetGameView: View {
       else {
         ZStack {
           ForEach(viewModel.deck.filter(isUndealt)) { card in
+            let z = zIndex(of: card, isInDeck: true)
             CardView(card: card)
               .matchedGeometryEffect(id: card.id, in: setNamespace)
+              .transition(AnyTransition.asymmetric(insertion: .identity, removal: .opacity))
+              .zIndex(z)
               .frame(width: CardConstants.DeckCardWidth, height: CardConstants.DeckCardHeight)
           }
         }
         .onTapGesture {
-          withAnimation {
-            viewModel.laidOutMoreCards()
+          // TODO: Extract into separate method?
+          var cardDelay = 0.2
+          for card in viewModel.laidOutMoreCards() {
+            withAnimation(dealAnimation(for: nil, with: cardDelay)) {
+              deal(card)
+            }
+            cardDelay += 0.2
           }
         }
       }
