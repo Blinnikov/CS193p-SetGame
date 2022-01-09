@@ -77,7 +77,6 @@ struct SetGameView: View {
             .scaleEffect(card.isPartOfASet != nil && card.isPartOfASet! ? 1.05 : 1.0)
             .animation(matchAnimation(isMatched: card.isPartOfASet), value: card.isPartOfASet)
             .padding(4)
-            .transition(AnyTransition.asymmetric(insertion: .identity, removal: .identity))
             .zIndex(z)
             .onTapGesture {
               withAnimation {
@@ -117,7 +116,6 @@ struct SetGameView: View {
             let z = zIndex(of: card, isInDeck: true)
             CardView(card: card)
               .matchedGeometryEffect(id: card.id, in: setNamespace)
-              .transition(AnyTransition.asymmetric(insertion: .identity, removal: .opacity))
               .zIndex(z)
               .frame(width: CardConstants.DeckCardWidth, height: CardConstants.DeckCardHeight)
           }
