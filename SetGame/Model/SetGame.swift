@@ -30,6 +30,14 @@ struct SetGame {
     }
   }
   
+  mutating func flipOver(_ card: Card) {
+    guard let chosenIndex = laidOutCards.firstIndex(where: { $0.id == card.id}) else {
+      return
+    }
+    
+    self.laidOutCards[chosenIndex].isFaceUp = true
+  }
+  
   mutating func choose(_ card: Card) {
     guard var chosenIndex = laidOutCards.firstIndex(where: { $0.id == card.id}) else {
       return
@@ -108,11 +116,10 @@ struct SetGame {
     var newPortionOfLaidOutCards: [Card] = []
     
     for _ in 0..<amount {
-      guard var card = drawACardFromTheDeck() else {
+      guard let card = drawACardFromTheDeck() else {
         break
       }
       
-      card.isFaceUp = true
       newPortionOfLaidOutCards.append(card)
     }
     

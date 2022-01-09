@@ -44,8 +44,24 @@ struct SetGameView: View {
     return .degrees(degree)
   }
   
-  private func dealAnimation(for card: Card?, with delay: Double) -> Animation {
-    return Animation.easeInOut(duration: 0.2).delay(delay)
+  private func dealWithAnimation() {
+    let DealAnimationDuration: CGFloat = 0.3
+    let FlipOverAnimationDuration: CGFloat = 0.2
+    let CardDealDelay: CGFloat = 0.2
+    let FlipOverDelay: CGFloat = 0.2
+    
+    var cardDelay = CardDealDelay
+    for card in viewModel.laidOutMoreCards() {
+      withAnimation(Animation.easeInOut(duration: DealAnimationDuration).delay(cardDelay)) {
+        deal(card)
+      }
+      
+      withAnimation(Animation.easeIn(duration: FlipOverAnimationDuration).delay(cardDelay + FlipOverDelay)) {
+        viewModel.flipOver(card)
+      }
+      
+      cardDelay += CardDealDelay
+    }
   }
   
   var body: some View {
@@ -71,13 +87,7 @@ struct SetGameView: View {
         }
       }
       .onAppear {
-        var cardDelay = 0.2
-        for card in viewModel.laidOutMoreCards() {
-          withAnimation(dealAnimation(for: nil, with: cardDelay)) {
-            deal(card)
-          }
-          cardDelay += 0.2
-        }
+        dealWithAnimation()
       }
       
       HStack {
@@ -113,14 +123,7 @@ struct SetGameView: View {
           }
         }
         .onTapGesture {
-          // TODO: Extract into separate method?
-          var cardDelay = 0.2
-          for card in viewModel.laidOutMoreCards() {
-            withAnimation(dealAnimation(for: nil, with: cardDelay)) {
-              deal(card)
-            }
-            cardDelay += 0.2
-          }
+          dealWithAnimation()
         }
       }
       Text("Deck: \(viewModel.deck.count)")

@@ -74,4 +74,8 @@ class SetViewModel: ObservableObject {
   func choose(_ card: Card) {
     model.choose(card)
   }
+  
+  func flipOver(_ card: Card) {
+    model.flipOver(card)
+  }
 }
