@@ -84,9 +84,9 @@ struct CardView: View {
 
 struct CardView_Previews: PreviewProvider {
   static var previews: some View {
-    let card = Card(numberOfShapes: 1, shape: .diamond, shading: .solid, color: .green, selected: true, isFaceUp: true, isPartOfASet: true)
+    let card = Card(numberOfShapes: 1, shape: .diamond, shading: .solid, color: .green, orderInDeck: 1, selected: true, isFaceUp: true, isPartOfASet: nil)
     CardView(card: card)
 //      .aspectRatio(2/3, contentMode: .fit)
-      .frame(width: 60, height: 90)
+      .frame(width: 120, height: 180)
   }
 }
