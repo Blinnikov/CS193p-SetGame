@@ -107,12 +107,13 @@ struct SetGameView: View {
   
   var deck: some View {
     VStack(alignment: .leading) {
-      if viewModel.deck.isEmpty {
+      let deck = viewModel.deck.filter(isUndealt)
+      if deck.isEmpty {
         emptyPile
       }
       else {
         ZStack {
-          ForEach(viewModel.deck.filter(isUndealt)) { card in
+          ForEach(deck) { card in
             let z = zIndex(of: card, isInDeck: true)
             CardView(card: card)
               .matchedGeometryEffect(id: card.id, in: setNamespace)
@@ -124,7 +125,7 @@ struct SetGameView: View {
           dealWithAnimation()
         }
       }
-      Text("Deck: \(viewModel.deck.count)")
+      Text("Deck: \(deck.count)")
     }
   }
   
