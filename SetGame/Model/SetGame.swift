@@ -20,8 +20,6 @@ struct SetGame {
   }
   
   mutating func laidOutMoreCards() -> [Card] {
-    defer { print("Cards left: \(playingDeck.count)") }
-    
     if isSet(indices: chosenIndices) {
       return replaceCards(at: chosenIndices)
     } else {
@@ -95,13 +93,10 @@ struct SetGame {
         markCards(atIndices: chosenIndices, asHavingSet: false)
       }
     }
-    
-    print(chosenIndices)
   }
   
   private func isSet(indices: [Int]) -> Bool {
     guard indices.count == 3 else {
-      print("We need to have exactly 3 cards to check for set")
       return false
     }
     
