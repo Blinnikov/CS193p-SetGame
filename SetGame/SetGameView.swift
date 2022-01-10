@@ -122,7 +122,12 @@ struct SetGameView: View {
           }
         }
         .onTapGesture {
-          dealWithAnimation()
+          // This extra `withAnimation` makes repositioning smoother -
+          // cards change their size with animation.
+          // Without that call they become smaller on deck tap instantaneously.
+          withAnimation {
+            dealWithAnimation()
+          }
         }
       }
       Text("Deck: \(deck.count)")
